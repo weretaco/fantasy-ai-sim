@@ -3,16 +3,20 @@ import os
 import pygame
 import sys
 
+from random import randrange
+
 
 class Unit:
    position: tuple[int, int]
+   color: pygame.Color
    target: tuple[int, int]
    moving: bool
 
    real_pos: tuple[float, float]
 
-   def __init__(self, position: tuple[int, int]):
+   def __init__(self, position: tuple[int, int], color: pygame.Color):
       self.position = position
+      self.color = color
       self.target = [position[0], position[1]]
       self.moving = False
       self.real_pos = [float(position[0]), float(position[1])]
@@ -22,7 +26,7 @@ class Unit:
 
       pos = (center[0] + self.position[0] - focus[0], center[1] + self.position[1] - focus[1])
 
-      pygame.draw.circle(screen, (255, 0, 0), pos, 25)
+      pygame.draw.circle(screen, self.color, pos, 25)
 
    def setTarget(self, target: tuple[int, int]):
       self.target = target
@@ -68,9 +72,6 @@ def main():
 
    game = AIGame()
 
-   for test in game.units:
-      print(test.x)
-
    init()
 
    info = pygame.display.Info()
@@ -81,6 +82,13 @@ def main():
    screen = create_window(SCREEN_WIDTH, SCREEN_HEIGHT)
 
    print(f"width: {screen.get_width()}, height: {screen.get_height()}")
+
+   enemyColor = (255, 0, 0)
+
+   game.units.append(Unit((800, 800), enemyColor))
+   game.units.append(Unit((400, 400), enemyColor))
+   game.units.append(Unit((600, 700), enemyColor))
+   game.units.append(Unit((300, 900), enemyColor))
 
    game_loop(screen, game)
 
@@ -103,7 +111,7 @@ def cleanup():
    print("Done cleaning up")
 
 def game_loop(screen: pygame.Surface, game: AIGame):
-   player = Unit([200, 200])
+   player = Unit([200, 200], (9, 9, 255))
 
    running = True
 
@@ -142,10 +150,16 @@ def game_loop(screen: pygame.Surface, game: AIGame):
 
             map_pos = (mouse_pos[0] - screenCenter[0] + player.position[0], mouse_pos[1] - screenCenter[1] + player.position[1])
 
-            #game.units.append(Unit(mouse_pos))
             player.setTarget(map_pos)
          elif event.type == pygame.QUIT:
             running = False
+
+      for unit in game.units:
+         if not unit.moving:
+            unit.setTarget((randrange(50, 950), randrange(50, 950)))
+
+      for unit in game.units:
+            unit.move(timeElapsed)
 
       player.move(timeElapsed)
 
@@ -163,7 +177,7 @@ def renderFrame(screen: pygame.Surface, game: AIGame, player: Unit):
    player.draw(screen, focus)
 
    for u in game.units:
-      u.draw(screen)
+      u.draw(screen, focus)
 
    drawMap(screen, focus, 10, 10, 100)
 
