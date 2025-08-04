@@ -25,4 +25,5 @@ class WorldMap:
       start = self.tile_size // 2
       tile_rect = pygame.Rect((center[0] - start, center[1] - start), (self.tile_size, self.tile_size))
 
-      pygame.draw.rect(screen, (0, 255, 0), tile_rect, 2)
+      pygame.draw.rect(screen, (34, 139, 34), tile_rect)
+      pygame.draw.rect(screen, (60, 65, 66), tile_rect, 2)

@@ -44,7 +44,7 @@ class AIGame:
 
       print(f"width: {self.screen.get_width()}, height: {self.screen.get_height()}")
 
-      self.world_map = WorldMap(10, 10, 100)
+      self.world_map = WorldMap(20, 20, 100)
 
       enemyColor = (255, 0, 0)
 
@@ -133,12 +133,12 @@ class AIGame:
 
       focus = self.player.position
 
+      self.world_map.draw(self.screen, focus)
+
       self.player.draw(self.screen, focus)
 
       for u in self.units:
          u.draw(self.screen, focus)
-
-      self.world_map.draw(self.screen, focus)
 
 
 AIGame().run()
